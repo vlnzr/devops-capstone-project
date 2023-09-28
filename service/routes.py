@@ -146,3 +146,20 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         f"Content-Type must be {media_type}",
     )
+
+
+######################################################################
+# ADD SECURITY HEADERS TO ALL RESPONSES
+######################################################################
+@app.after_request
+def add_security_headers(response):
+    """
+    Add security headers to all responses
+    """
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Content-Security-Policy'] = "default-src 'self'; object-src 'none'"
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    
+    return response
